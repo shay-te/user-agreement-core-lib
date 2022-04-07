@@ -36,3 +36,5 @@ class SeedService(Service):
                 list_items.append(result_to_dict(self._agreement_list_item.add(list_data['id'], item)))
         list_data.setdefault('list_items', list_items)
         return list_data
+
+    
