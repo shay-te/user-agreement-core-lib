@@ -15,3 +15,5 @@ core_lib:
           password: ${oc.env:AGREEMENT_DB_PASSWORD}
           port: ${oc.env:AGREEMENT_DB_PORT}
           host: ${oc.env:AGREEMENT_DB_HOST}
+  alembic:
+    script_location: data_layers/data/agreement_db/migrations
