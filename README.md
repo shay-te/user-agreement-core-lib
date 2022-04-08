@@ -22,7 +22,7 @@ Responsible for inserting data in database
 
 Functions 
 
--`seed_document(self, name: str, file_path: str, file_path_text_content: str, version: str)`
+- `seed_document(self, name: str, file_path: str, file_path_text_content: str, version: str)`
 
 `name` (*str*): Name of the document.
 
@@ -34,7 +34,7 @@ Functions
 
 >Note: There cannot be 2 documents with same name and same version, there can be multiple files with same name and different versions
 
--`seed_agreement_list(self, agreement_list_name: str, agreement_list_items: list = [])`
+- `seed_agreement_list(self, agreement_list_name: str, agreement_list_items: list = [])`
 
 `agreement_list_name` (*str*): Name of the list group.
 
@@ -125,22 +125,5 @@ ua_core_lib.agreement_service.is_agreed_list(user_id, list_id) # Returns false a
 
 ```
 
-
-
-
 ## License
 Core-Lib in licenced under [MIT](https://github.com/shacoshe/core-lib/blob/master/LICENSE)
-
-## About
-
-
-
-
-## Services
-
-  - SeedService
-    - 
-
-#### SeedService
-
-We can use this service to add documents or
