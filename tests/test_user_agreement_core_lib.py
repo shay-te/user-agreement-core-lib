@@ -71,6 +71,7 @@ class TestUACoreLib(unittest.TestCase):
             self.assertEqual(len(list_item_data), 6)
 
         with self.assertRaises(Exception):
+            self.ua_core_lib.seed_service.seed_agreement_list('', items)
             for items in list_data['list_items']:
                 self.ua_core_lib.agreement_service.agree_items(agreed_user, items['id'])
 
