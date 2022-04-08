@@ -12,6 +12,6 @@ class AgreementList(Base, SoftDeleteMixin):
     INDEX_LIST_NAME = 'name'
 
     id = Column(INTEGER, primary_key=True, nullable=False)
-    name = Column(VARCHAR, nullable=False, default=None, unique=True)
+    name = Column(VARCHAR(255), nullable=False)
 
     __table_args__ = (Index(INDEX_LIST_NAME, name, unique=True),)

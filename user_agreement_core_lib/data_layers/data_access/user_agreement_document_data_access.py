@@ -13,24 +13,27 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreeme
 class UserAgreementDocumentDataAccess(DataAccess):
     def __init__(self, db: SqlAlchemyDataHandlerRegistry):
         self.db_session = db
-        self.entity = UserAgreementDocument
 
     def agree(self, user_id: int, document_id: int):
         with self.db_session.get() as session:
-            entity = self.entity()
+            entity = UserAgreementDocument()
             entity.user_id = user_id
             entity.agreement_document_id = document_id
             session.add(entity)
         return entity
 
-    def agreed_documents(self, user_id: int):
+    def user_agreed_document(self, user_id: int, doc_id: int):
         with self.db_session.get() as session:
-            return session.query(self.entity).filter(self.entity.user_id == user_id).all()
+            return (
+                session.query(UserAgreementDocument)
+                .filter(UserAgreementDocument.user_id == user_id, UserAgreementDocument.agreement_document_id == doc_id)
+                .all()
+            )
 
     def delete(self, list_id: int):
         with self.db_session.get() as session:
             return (
-                session.query(self.entity)
-                .filter(self.entity.id == list_id)
-                .update({self.entity.deleted_at: datetime.utcnow()})
+                session.query(UserAgreementDocument)
+                .filter(UserAgreementDocument.id == list_id)
+                .update({UserAgreementDocument.deleted_at: datetime.utcnow()})
             )

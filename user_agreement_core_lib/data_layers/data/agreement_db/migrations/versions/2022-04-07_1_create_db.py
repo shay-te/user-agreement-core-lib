@@ -10,8 +10,6 @@ from datetime import datetime
 from alembic import op
 import sqlalchemy as sa
 
-
-# revision identifiers, used by Alembic.
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_document import (
     AgreementDocument,
 )
@@ -38,14 +36,14 @@ def upgrade():
     op.create_table(
         AgreementDocument.__tablename__,
         sa.Column(AgreementDocument.id.key, sa.Integer, primary_key=True, nullable=False),
+        sa.Column(AgreementDocument.name.key, sa.VARCHAR(255), nullable=False),
         sa.Column(
-            AgreementDocument.file_text.key,
+            AgreementDocument.file.key,
             sa.LargeBinary,
             nullable=False,
-            default=None,
         ),
-        sa.Column(AgreementDocument.file_path.key, sa.VARCHAR, nullable=False, default=None),
-        sa.Column(AgreementDocument.version.key, sa.VARCHAR, nullable=False, default=''),
+        sa.Column(AgreementDocument.file_text.key, sa.TEXT, nullable=False),
+        sa.Column(AgreementDocument.version.key, sa.VARCHAR(255), nullable=False),
         sa.Column(AgreementDocument.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
             AgreementDocument.updated_at.key,
@@ -67,10 +65,8 @@ def upgrade():
         sa.Column(AgreementList.id.key, sa.Integer, primary_key=True, nullable=False),
         sa.Column(
             AgreementList.name.key,
-            sa.VARCHAR,
+            sa.VARCHAR(255),
             nullable=False,
-            default=None,
-            unique=True,
         ),
         sa.Column(AgreementList.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
@@ -94,9 +90,8 @@ def upgrade():
             AgreementListItem.agreement_list_id.key,
             sa.INTEGER,
             nullable=False,
-            default=None,
         ),
-        sa.Column(AgreementListItem.label.key, sa.VARCHAR, nullable=False, default=None),
+        sa.Column(AgreementListItem.label.key, sa.VARCHAR(255), nullable=False),
         sa.Column(AgreementListItem.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
             AgreementListItem.updated_at.key,
@@ -116,12 +111,11 @@ def upgrade():
     op.create_table(
         UserAgreementDocument.__tablename__,
         sa.Column(UserAgreementDocument.id.key, sa.Integer, primary_key=True, nullable=False),
-        sa.Column(UserAgreementDocument.user_id.key, sa.INTEGER, nullable=False, default=None),
+        sa.Column(UserAgreementDocument.user_id.key, sa.INTEGER, nullable=False),
         sa.Column(
             UserAgreementDocument.agreement_document_id.key,
             sa.INTEGER,
             nullable=False,
-            default=None,
         ),
         sa.Column(UserAgreementDocument.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
@@ -142,13 +136,12 @@ def upgrade():
     op.create_table(
         UserAgreementListItem.__tablename__,
         sa.Column(UserAgreementListItem.id.key, sa.Integer, primary_key=True, nullable=False),
-        sa.Column(UserAgreementListItem.user_id.key, sa.INTEGER, nullable=False, default=None),
+        sa.Column(UserAgreementListItem.user_id.key, sa.INTEGER, nullable=False),
         sa.Column(
             UserAgreementListItem.agreement_list_item_id.key,
             sa.ForeignKey('agreement_list_item.id'),
             sa.INTEGER,
             nullable=False,
-            default=None,
         ),
         sa.Column(UserAgreementListItem.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
@@ -158,10 +151,12 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(UserAgreementListItem.deleted_at.key, sa.DateTime, default=None),
+        sa.Column(UserAgreementListItem.deleted_at_token.key, sa.Integer, default=None),
         sa.Index(
             UserAgreementListItem.INDEX_USER_ITEM_ID,
             UserAgreementListItem.user_id.key,
             UserAgreementListItem.agreement_list_item_id.key,
+            UserAgreementListItem.deleted_at_token.key,
             unique=True,
         ),
     )

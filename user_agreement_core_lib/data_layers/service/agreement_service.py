@@ -29,23 +29,19 @@ class AgreementService(Service):
         return self._user_agreement_document_da.agree(user_id, document_id)
 
     @ResultToDict()
-    def agree_items(self, user_id: int, item_id: int):
-        self._agreement_list_item_da.get_item(item_id)  # For verifying if the item exists else will raise an exception
+    def agree_item(self, user_id: int, item_id: int):
+        # assertion raise 404 when item not found
+        assert self._agreement_list_item_da.get_item(item_id)
         return self._user_agreement_list_item_da.agree(user_id, item_id)
 
     @ResultToDict()
-    def disagree_items(self, user_id: int, item_id: int):
-        self._user_agreement_list_item_da.agreed_user_item(
-            user_id, item_id
-        )  # For verifying if the user has agreed to the item earlier or not else will raise an exception
+    def disagree_item(self, user_id: int, item_id: int):
+        # assertion raise 404 when not exists
+        assert self._user_agreement_list_item_da.agreed_user_item(user_id, item_id)
         return self._user_agreement_list_item_da.delete(user_id, item_id)
 
     def is_agreed_document(self, user_id: int, document_id: int) -> bool:
-        agreed_docs_list = []
-        agreed_docs = self._user_agreement_document_da.agreed_documents(user_id)
-        for row in agreed_docs:
-            agreed_docs_list.append(row.agreement_document_id)
-        return document_id in agreed_docs_list
+        return True if self._user_agreement_document_da.user_agreed_document(user_id, document_id) else False
 
     def is_agreed_list(self, user_id, list_id: int) -> bool:
         items_list = []

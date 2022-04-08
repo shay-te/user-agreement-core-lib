@@ -17,12 +17,10 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreeme
 class UserAgreementListItemDataAccess(DataAccess):
     def __init__(self, db: SqlAlchemyDataHandlerRegistry):
         self.db_session = db
-        self.entity = UserAgreementListItem
-        self.agreement_list_item_entity = AgreementListItem
 
     def agree(self, user_id: int, item_id: int):
         with self.db_session.get() as session:
-            entity = self.entity()
+            entity = UserAgreementListItem()
             entity.user_id = user_id
             entity.agreement_list_item_id = item_id
             session.add(entity)
@@ -32,29 +30,40 @@ class UserAgreementListItemDataAccess(DataAccess):
     def agreed_user_item(self, user_id: int, item_id: int):
         with self.db_session.get() as session:
             return (
-                session.query(self.entity)
-                .filter(self.entity.user_id == user_id)
-                .filter(self.entity.agreement_list_item_id == item_id)
-                .filter(self.entity.deleted_at == None)
+                session.query(UserAgreementListItem)
+                .filter(
+                    UserAgreementListItem.user_id == user_id,
+                    UserAgreementListItem.agreement_list_item_id == item_id,
+                    UserAgreementListItem.deleted_at == None,
+                )
                 .all()
             )
 
     def agreed_list_items(self, user_id: int, list_id: int):
         with self.db_session.get() as session:
             return (
-                session.query(self.entity)
-                .join(self.agreement_list_item_entity)
-                .filter(self.entity.user_id == user_id)
-                .filter(self.agreement_list_item_entity.agreement_list_id == list_id)
-                .filter(self.entity.deleted_at == None)
+                session.query(UserAgreementListItem)
+                .join(AgreementListItem)
+                .filter(
+                    UserAgreementListItem.user_id == user_id,
+                    AgreementListItem.agreement_list_id == list_id,
+                    UserAgreementListItem.deleted_at == None,
+                )
                 .all()
             )
 
     def delete(self, user_id: int, item_id: int):
         with self.db_session.get() as session:
             return (
-                session.query(self.entity)
-                .filter(self.entity.agreement_list_item_id == item_id)
-                .filter(self.entity.user_id == user_id)
-                .update({self.entity.deleted_at: datetime.utcnow()})
+                session.query(UserAgreementListItem)
+                .filter(
+                    UserAgreementListItem.agreement_list_item_id == item_id,
+                    UserAgreementListItem.user_id == user_id,
+                )
+                .update(
+                    {
+                        UserAgreementListItem.deleted_at: datetime.utcnow(),
+                        UserAgreementListItem.deleted_at_token: int(datetime.utcnow().timestamp()),
+                    }
+                )
             )
