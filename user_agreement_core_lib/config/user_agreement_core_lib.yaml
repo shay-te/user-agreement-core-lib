@@ -17,3 +17,4 @@ core_lib:
           host: ${oc.env:AGREEMENT_DB_HOST}
   alembic:
     script_location: data_layers/data/agreement_db/migrations
+    version_table: user_agreement_alembic_version

@@ -12,7 +12,7 @@ class AgreementListItem(Base, SoftDeleteMixin):
     INDEX_LABEL_LIST_ID = 'label_list_id'
 
     id = Column(INTEGER, primary_key=True, nullable=False)
-    agreement_list_id = Column(INTEGER, ForeignKey('agreement_list.id'), nullable=False, default=None)
-    label = Column(VARCHAR, nullable=False, default=None)
+    agreement_list_id = Column(INTEGER, ForeignKey('agreement_list.id'), nullable=False)
+    label = Column(VARCHAR(255), nullable=False)
 
     __table_args__ = (Index(INDEX_LABEL_LIST_ID, agreement_list_id, label, unique=True),)

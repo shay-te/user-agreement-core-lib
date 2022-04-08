@@ -23,12 +23,17 @@ class SeedService(Service):
         self._agreement_list_item = agreement_list_item
 
     @ResultToDict()
-    def seed_document(self, name: str, file_path: str, file_path_text_content: str, version: str):
-        if name and file_path and file_path_text_content and version:
+    def seed_document(self, name: str, file_path: str, file_text_content: str, version: str):
+        if name and file_path and file_text_content and version:
             with open(file_path, 'rb') as file:
                 data_blob = file.read()
                 return self._agreement_document.create(
-                    {'name': name, 'file_text': file_path_text_content, 'file': data_blob, 'version': version}
+                    {
+                        'name': name,
+                        'file_text': file_text_content,
+                        'file': data_blob,
+                        'version': version,
+                    }
                 )
         else:
             raise ValueError

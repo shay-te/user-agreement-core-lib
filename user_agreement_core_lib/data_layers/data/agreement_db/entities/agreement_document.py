@@ -12,9 +12,9 @@ class AgreementDocument(Base, SoftDeleteMixin):
     INDEX_DOC_NAME_VERSION = 'name_version'
 
     id = Column(INTEGER, primary_key=True, nullable=False)
-    name = Column(VARCHAR, nullable=False, default=None)
+    name = Column(VARCHAR(255), nullable=False)
     file = Column(LargeBinary, nullable=False)
-    file_text = Column(TEXT, nullable=False, default=None)
-    version = Column(VARCHAR, nullable=False, default=None)
+    file_text = Column(TEXT, nullable=False)
+    version = Column(VARCHAR(255), nullable=False)
 
     __table_args__ = (Index(INDEX_DOC_NAME_VERSION, name, version, unique=True),)
