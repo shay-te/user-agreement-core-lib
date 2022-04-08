@@ -75,7 +75,7 @@ When a user agrees to a document, this method can be invoked, and it stores the 
 Created row in the entity **UserAgreementDocument** 
 
 
-<br/>
+<br/><br/>
 
 ```python
 def agree_item(self, user_id: int, item_id: int):
@@ -93,7 +93,7 @@ When the user agrees to an item in the list, this method can be invoked to store
 
 Created row in the entity **UserAgreementListItem** 
 
-<br/>
+<br/><br/>
 
 ```python
 def disagree_item(self, user_id: int, item_id: int):
@@ -107,7 +107,7 @@ When the user disagrees an item in the list this method can be invoked to SoftDe
 
 `item_id` (*int*): Item ID that the user has disagreed from the list.
 
-<br/>
+<br/><br/>
 
 ```python
 def is_agreed_document(self, user_id: int, document_id: int):
@@ -125,7 +125,7 @@ To check if the user has agreed to a specific document.
 
 `True` if agreed else `False`
 
-<br/>
+<br/><br/>
 
 ```python
 def is_agreed_list(self, user_id, list_id: int):
@@ -172,7 +172,7 @@ Created row in the entity **AgreementDocument** (*dict*).
 
 >Note: There cannot be 2 documents with same name and same version, there can be multiple files with same name and different versions
 
-<br/>
+<br/><br/>
 
 ```python
 def seed_agreement_list(self, agreement_list_name: str, agreement_list_items: list = []):
