@@ -120,7 +120,7 @@ for items in list_data['list_items']:
     list_item_data = ua_core_lib.agreement_service.agree_items(user_id, items['id'])
 
 ua_core_lib.agreement_service.is_agreed_list(user_id, list_id) #  Returns true if the user has agreed to all the list items
-ua_core_lib.agreement_service.is_agreed_list(user_id, list_item_id)
+ua_core_lib.agreement_service.disagree_items(user_id, list_item_id)
 ua_core_lib.agreement_service.is_agreed_list(user_id, list_id) # Returns false after disagreeing to one item
 
 ```
