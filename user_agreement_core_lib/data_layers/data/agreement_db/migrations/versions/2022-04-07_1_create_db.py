@@ -54,6 +54,12 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(AgreementDocument.deleted_at.key, sa.DateTime, default=None),
+        sa.Index(
+            AgreementDocument.INDEX_DOC_NAME_VERSION,
+            AgreementDocument.name.key,
+            AgreementDocument.version.key,
+            unique=True,
+        ),
     )
 
     op.create_table(
@@ -74,6 +80,11 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(AgreementList.deleted_at.key, sa.DateTime, default=None),
+        sa.Index(
+            AgreementList.INDEX_LIST_NAME,
+            AgreementList.name.key,
+            unique=True,
+        ),
     )
 
     op.create_table(
@@ -94,6 +105,12 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(AgreementListItem.deleted_at.key, sa.DateTime, default=None),
+        sa.Index(
+            AgreementListItem.INDEX_LABEL_LIST_ID,
+            AgreementListItem.label.key,
+            AgreementListItem.agreement_list_id.key,
+            unique=True,
+        ),
     )
 
     op.create_table(
@@ -114,6 +131,12 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(UserAgreementDocument.deleted_at.key, sa.DateTime, default=None),
+        sa.Index(
+            UserAgreementDocument.INDEX_USER_DOCUMENT_ID,
+            UserAgreementDocument.user_id.key,
+            UserAgreementDocument.agreement_document_id.key,
+            unique=True,
+        ),
     )
 
     op.create_table(
@@ -135,6 +158,12 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(UserAgreementListItem.deleted_at.key, sa.DateTime, default=None),
+        sa.Index(
+            UserAgreementListItem.INDEX_USER_ITEM_ID,
+            UserAgreementListItem.user_id.key,
+            UserAgreementListItem.agreement_list_item_id.key,
+            unique=True,
+        ),
     )
 
 

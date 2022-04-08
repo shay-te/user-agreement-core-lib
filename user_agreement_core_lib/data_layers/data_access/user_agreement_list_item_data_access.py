@@ -54,7 +54,7 @@ class UserAgreementListItemDataAccess(DataAccess):
         with self.db_session.get() as session:
             return (
                 session.query(self.entity)
-                .filter(self.entity.id == item_id)
+                .filter(self.entity.agreement_list_item_id == item_id)
                 .filter(self.entity.user_id == user_id)
                 .update({self.entity.deleted_at: datetime.utcnow()})
             )
