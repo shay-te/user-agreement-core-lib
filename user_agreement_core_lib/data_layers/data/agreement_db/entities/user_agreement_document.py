@@ -1,4 +1,4 @@
-from sqlalchemy import Column, INTEGER, Index
+from sqlalchemy import Column, Integer, Index
 
 from core_lib.data_layers.data.db.sqlalchemy.base import Base
 from core_lib.data_layers.data.db.sqlalchemy.mixins.soft_delete_mixin import (
@@ -11,8 +11,8 @@ class UserAgreementDocument(Base, SoftDeleteMixin):
 
     INDEX_USER_DOCUMENT_ID = 'user_id_agreement_document_id'
 
-    id = Column(INTEGER, primary_key=True, nullable=False)
-    user_id = Column(INTEGER, nullable=False)
-    agreement_document_id = Column(INTEGER, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    user_id = Column(Integer, nullable=False)
+    agreement_document_id = Column(Integer, nullable=False)
 
     __table_args__ = (Index(INDEX_USER_DOCUMENT_ID, user_id, agreement_document_id, unique=True),)

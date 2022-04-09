@@ -30,29 +30,31 @@ class AgreementService(Service):
 
     @ResultToDict()
     def agree_item(self, user_id: int, item_id: int):
-        # assertion raise 404 when item not found
-        assert self._agreement_list_item_da.get_item(item_id)
+        assert self._agreement_list_item_da.get_item(item_id)  # raise 404 when not found
         return self._user_agreement_list_item_da.agree(user_id, item_id)
 
     @ResultToDict()
     def disagree_item(self, user_id: int, item_id: int):
-        # assertion raise 404 when not exists
-        assert self._user_agreement_list_item_da.agreed_user_item(user_id, item_id)
+        assert self._user_agreement_list_item_da.agreed_user_item(user_id, item_id)  # raise 404 when not found
         return self._user_agreement_list_item_da.delete(user_id, item_id)
+
+    @ResultToDict()
+    def agreed_items(self, user_id: int, list_id: int):
+        return self._user_agreement_list_item_da.agreed_list_items(user_id, list_id)
 
     def is_agreed_document(self, user_id: int, document_id: int) -> bool:
         return True if self._user_agreement_document_da.user_agreed_document(user_id, document_id) else False
 
     def is_agreed_list(self, user_id, list_id: int) -> bool:
-        items_list = []
-        user_items_list = []
+        items_list = set()
+        user_items_list = set()
         items = self._agreement_list_item_da.get_list_items(list_id)
         for item in items:
-            items_list.append(item.id)
+            items_list.add(item.id)
         user_items = self._user_agreement_list_item_da.agreed_list_items(user_id, list_id)
         for item in user_items:
-            user_items_list.append(result_to_dict(item)['agreement_list_item_id'])
+            user_items_list.add(result_to_dict(item)['agreement_list_item_id'])
         if items_list and user_items_list and len(items_list) == len(user_items_list):
-            return True if set(items_list) == set(user_items_list) else False
+            return True if items_list == user_items_list else False
         else:
             return False

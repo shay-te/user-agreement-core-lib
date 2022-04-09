@@ -10,5 +10,10 @@ core_lib:
           pool_pre_ping: false
         url:
           protocol: sqlite
+          file: ~
+          username: ~
+          password: ~
+          port: ~
+          host: ~
   alembic:
     script_location: data_layers/data/agreement_db/migrations

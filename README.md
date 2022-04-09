@@ -26,27 +26,27 @@ ua_core_lib = UserAgreementCoreLib(hydra.compose('user_agreement_core_lib.yaml')
 version = 'v1'
 md_content = '**some***basic - markdown'
 file_name = 'privacy_policy'
-document_data = ua_core_lib.seed_service.seed_document(file_name, 'path/to/file', md_content, version)
+document_data = ua_core_lib.seed.seed_document(file_name, version, 'path/to/file', md_content)
 
 # Agreement for documents
-ua_core_lib.agreement_service.agree_document(user_id, document_data['id'])
-ua_core_lib.agreement_service.is_agreed_document(user_id,
-                                                 document_data['id'])  # Returns True is user has agreed the document
+ua_core_lib.agreement.agree_document(user_id, document_data['id'])
+ua_core_lib.agreement.is_agreed_document(user_id,
+                                         document_data['id'])  # Returns True is user has agreed the document
 
 # Seed List and List Items
 list_name = 'terms_service'
 list_items = ['term1', 'term2', 'term3'...]
-list_data = ua_core_lib.seed_service.seed_agreement_list(list_name, list_items)
+list_data = ua_core_lib.seed.seed_agreement_list(list_name, list_items)
 # list_data will have the details of created list and the ids of created items
 
 # Agreement for List items
 for items in list_data['list_items']:
-    list_item_data = ua_core_lib.agreement_service.agree_item(user_id, items['id'])
+    list_item_data = ua_core_lib.agreement.agree_item(user_id, items['id'])
 
-ua_core_lib.agreement_service.is_agreed_list(user_id,
-                                             list_id)  # Returns true if the user has agreed to all the list items
-ua_core_lib.agreement_service.disagree_item(user_id, list_item_id)
-ua_core_lib.agreement_service.is_agreed_list(user_id, list_id)  # Returns false after disagreeing to one item
+ua_core_lib.agreement.is_agreed_list(user_id,
+                                     list_id)  # Returns true if the user has agreed to all the list items
+ua_core_lib.agreement.disagree_item(user_id, list_item_id)
+ua_core_lib.agreement.is_agreed_list(user_id, list_id)  # Returns false after disagreeing to one item
 
 ```
 
@@ -152,7 +152,7 @@ Responsible for inserting data in database
 ## Functions 
 
 ```python
-def seed_document(self, name: str, file_path: str, file_path_text_content: str, version: str):
+def seed_document(self, name: str, version: str, file_path: str, file_path_text_content: str):
 ```
 Is responsible to add document data into the database entity.
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, INTEGER, VARCHAR, Index
+from sqlalchemy import Column, VARCHAR, Index, Integer
 
 from core_lib.data_layers.data.db.sqlalchemy.base import Base
 from core_lib.data_layers.data.db.sqlalchemy.mixins.soft_delete_mixin import (
@@ -11,7 +11,7 @@ class AgreementList(Base, SoftDeleteMixin):
 
     INDEX_LIST_NAME = 'name'
 
-    id = Column(INTEGER, primary_key=True, nullable=False)
-    name = Column(VARCHAR(255), nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    name = Column(VARCHAR(length=255), nullable=False)
 
     __table_args__ = (Index(INDEX_LIST_NAME, name, unique=True),)

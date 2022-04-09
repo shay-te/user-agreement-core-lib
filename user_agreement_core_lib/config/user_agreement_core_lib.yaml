@@ -9,12 +9,12 @@ core_lib:
           pool_recycle: 3200
           pool_pre_ping: false
         url:
-          file: ${oc.env:AGREEMENT_DB_DB}
+          file: ${oc.env:POSTGRES_DB}
           protocol: postgresql
-          username: ${oc.env:AGREEMENT_DB_USER}
-          password: ${oc.env:AGREEMENT_DB_PASSWORD}
-          port: ${oc.env:AGREEMENT_DB_PORT}
-          host: ${oc.env:AGREEMENT_DB_HOST}
+          username: ${oc.env:POSTGRES_USER}
+          password: ${oc.env:POSTGRES_PASSWORD}
+          port: ${oc.env:POSTGRES_PORT}
+          host: ${oc.env:POSTGRES_HOST}
   alembic:
     script_location: data_layers/data/agreement_db/migrations
     version_table: user_agreement_alembic_version
