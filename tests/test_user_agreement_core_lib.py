@@ -66,13 +66,13 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(document_data['file_text'], dummy_md)
 
         document_id = document_data.get('id')
-        agreed_document = self.ua_core_lib.agreement.agree_document(self.user1_id, document_id)
+        agreed_document = self.ua_core_lib.agreement_document.agree_document(self.user1_id, document_id)
         self.assertIsInstance(agreed_document, dict)
         self.assertEqual(agreed_document['agreement_document_id'], document_id)
         self.assertEqual(agreed_document['user_id'], self.user1_id)
 
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_document(self.user1_id, document_id))
-        self.assertFalse(self.ua_core_lib.agreement.is_agreed_document(self.user2_id, document_id))
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_document(self.user1_id, document_id))
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_document(self.user2_id, document_id))
 
     def _test_lists(self, list_name: str, agreed_user: int, non_agreed_user: int):
         items_seed = ['item1', 'item2', 'item3', 'item4']
@@ -88,7 +88,7 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(len(list_items), len(items_seed))
 
         for item in list_items:
-            list_item_data = self.ua_core_lib.agreement.agree_item(agreed_user, item['id'])
+            list_item_data = self.ua_core_lib.agreement_list.agree_item(agreed_user, item['id'])
             self.assertIsInstance(list_item_data, dict)
             self.assertEqual(len(list_item_data), 7)
 
@@ -97,25 +97,25 @@ class TestUACoreLib(unittest.TestCase):
 
         for item in list_items:
             with self.assertRaises(DatabaseError):
-                self.ua_core_lib.agreement.agree_item(agreed_user, item['id'])
+                self.ua_core_lib.agreement_list.agree_item(agreed_user, item['id'])
 
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_list(agreed_user, list_id))
-        self.assertFalse(self.ua_core_lib.agreement.is_agreed_list(non_agreed_user, list_id))
+        self.assertTrue(self.ua_core_lib.agreement_list.is_agreed_list(agreed_user, list_id))
+        self.assertFalse(self.ua_core_lib.agreement_list.is_agreed_list(non_agreed_user, list_id))
 
         first_item_id = list_items[0]['id']
 
-        self.ua_core_lib.agreement.disagree_item(agreed_user, first_item_id)
-        self.assertFalse(self.ua_core_lib.agreement.is_agreed_list(agreed_user, list_id))
+        self.ua_core_lib.agreement_list.disagree_item(agreed_user, first_item_id)
+        self.assertFalse(self.ua_core_lib.agreement_list.is_agreed_list(agreed_user, list_id))
 
-        self.ua_core_lib.agreement.agree_item(agreed_user, first_item_id)
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_list(agreed_user, list_id))
+        self.ua_core_lib.agreement_list.agree_item(agreed_user, first_item_id)
+        self.assertTrue(self.ua_core_lib.agreement_list.is_agreed_list(agreed_user, list_id))
 
         with self.assertRaises(StatusCodeException):
-            self.ua_core_lib.agreement.agree_item(agreed_user, -1)
+            self.ua_core_lib.agreement_list.agree_item(agreed_user, -1)
 
         sleep(1)
         for item in list_items:
-            self.ua_core_lib.agreement.disagree_item(agreed_user, item['id'])
+            self.ua_core_lib.agreement_list.disagree_item(agreed_user, item['id'])
 
     def test_agreement_list(self):
         # Randomly generate a name for testing
@@ -141,24 +141,24 @@ class TestUACoreLib(unittest.TestCase):
 
         for user in [self.user1_id, self.user2_id]:
             for item in list_items:
-                list_item_data = self.ua_core_lib.agreement.agree_item(user, item['id'])
+                list_item_data = self.ua_core_lib.agreement_list.agree_item(user, item['id'])
                 self.assertIsInstance(list_item_data, dict)
                 self.assertEqual(len(list_item_data), 7)
 
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_list(self.user1_id, list_id))
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_list(self.user2_id, list_id))
-        self.assertFalse(self.ua_core_lib.agreement.is_agreed_list(self.user3_id, list_id))
+        self.assertTrue(self.ua_core_lib.agreement_list.is_agreed_list(self.user1_id, list_id))
+        self.assertTrue(self.ua_core_lib.agreement_list.is_agreed_list(self.user2_id, list_id))
+        self.assertFalse(self.ua_core_lib.agreement_list.is_agreed_list(self.user3_id, list_id))
 
         for item in list_items:
-            self.ua_core_lib.agreement.disagree_item(self.user1_id, item['id'])
-        self.assertFalse(self.ua_core_lib.agreement.is_agreed_list(self.user1_id, list_id))
+            self.ua_core_lib.agreement_list.disagree_item(self.user1_id, item['id'])
+        self.assertFalse(self.ua_core_lib.agreement_list.is_agreed_list(self.user1_id, list_id))
 
         for item in list_items:
-            self.ua_core_lib.agreement.agree_item(self.user1_id, item['id'])
-        self.assertTrue(self.ua_core_lib.agreement.is_agreed_list(self.user1_id, list_id))
+            self.ua_core_lib.agreement_list.agree_item(self.user1_id, item['id'])
+        self.assertTrue(self.ua_core_lib.agreement_list.is_agreed_list(self.user1_id, list_id))
 
         with self.assertRaises(StatusCodeException):
-            self.ua_core_lib.agreement.agree_item(self.user2_id, -1)
+            self.ua_core_lib.agreement_list.agree_item(self.user2_id, -1)
 
         for item in list_items:
-            self.ua_core_lib.agreement.disagree_item(self.user2_id, item['id'])
+            self.ua_core_lib.agreement_list.disagree_item(self.user2_id, item['id'])

@@ -21,9 +21,12 @@ from user_agreement_core_lib.data_layers.data_access.agreement_list_data_access 
 from user_agreement_core_lib.data_layers.data_access.agreement_list_item_data_access import (
     AgreementListItemDataAccess,
 )
-from user_agreement_core_lib.data_layers.service.agreement_service import (
-    AgreementService,
-)
+from user_agreement_core_lib.data_layers.data_access.user_agreement_document_data_access import \
+    UserAgreementDocumentDataAccess
+from user_agreement_core_lib.data_layers.data_access.user_agreement_list_item_data_access import \
+    UserAgreementListItemDataAccess
+from user_agreement_core_lib.data_layers.service.agreement_document_service import AgreementDocumentService
+from user_agreement_core_lib.data_layers.service.agreement_list_service import AgreementListService
 from user_agreement_core_lib.data_layers.service.seed_service import SeedService
 
 
@@ -39,7 +42,11 @@ class UserAgreementCoreLib(CoreLib):
         agreement_document = AgreementDocumentDataAccess(agreement_db_session)
         agreement_list = AgreementListDataAccess(agreement_db_session)
         agreement_list_item = AgreementListItemDataAccess(agreement_db_session)
-        self.agreement = AgreementService(agreement_db_session, agreement_list_item)
+        user_agreement_document_da = UserAgreementDocumentDataAccess(agreement_db_session)
+        user_agreement_list_item_da = UserAgreementListItemDataAccess(agreement_db_session)
+
+        self.agreement_document = AgreementDocumentService(agreement_document, user_agreement_document_da)
+        self.agreement_list = AgreementListService(user_agreement_list_item_da, agreement_list_item)
         self.seed = SeedService(
             agreement_document,
             agreement_list,
