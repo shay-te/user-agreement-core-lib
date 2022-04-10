@@ -1,20 +1,19 @@
 # @package _global_
 core_lib:
-  user_agreement_core_lib:
-    data:
-      agreement_db:
-        log_queries: false
-        create_db: true
-        session:
-          pool_recycle: 3200
-          pool_pre_ping: false
-        url:
-          file: ${oc.env:POSTGRES_DB}
-          protocol: postgresql
-          username: ${oc.env:POSTGRES_USER}
-          password: ${oc.env:POSTGRES_PASSWORD}
-          port: ${oc.env:POSTGRES_PORT}
-          host: ${oc.env:POSTGRES_HOST}
+  data:
+    agreement_db:
+      log_queries: false
+      create_db: true
+      session:
+        pool_recycle: 3200
+        pool_pre_ping: false
+      url:
+        file: ${oc.env:POSTGRES_DB}
+        protocol: postgresql
+        username: ${oc.env:POSTGRES_USER}
+        password: ${oc.env:POSTGRES_PASSWORD}
+        port: ${oc.env:POSTGRES_PORT}
+        host: ${oc.env:POSTGRES_HOST}
   alembic:
     script_location: data_layers/data/agreement_db/migrations
     version_table: user_agreement_alembic_version

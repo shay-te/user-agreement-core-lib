@@ -37,7 +37,7 @@ class UserAgreementCoreLib(CoreLib):
         self.config = conf
 
         agreement_db_session = SqlAlchemyDataHandlerRegistry(
-            self.config.core_lib.user_agreement_core_lib.data.agreement_db
+            self.config.core_lib.data.agreement_db
         )
         agreement_document = AgreementDocumentDataAccess(agreement_db_session)
         agreement_list = AgreementListDataAccess(agreement_db_session)
