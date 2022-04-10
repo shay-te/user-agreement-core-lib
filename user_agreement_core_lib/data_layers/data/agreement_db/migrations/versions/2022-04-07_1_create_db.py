@@ -9,6 +9,7 @@ from datetime import datetime
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import ForeignKey
 
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_document import AgreementDocument
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_list import AgreementList
@@ -84,6 +85,7 @@ def upgrade():
         sa.Column(
             UserAgreementDocument.agreement_document_id.key,
             sa.Integer,
+            ForeignKey('agreement_document.id'),
             nullable=False,
         ),
         sa.Column(UserAgreementDocument.created_at.key, sa.DateTime, default=datetime.utcnow),

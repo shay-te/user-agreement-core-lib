@@ -16,12 +16,15 @@ class AgreementDocumentService(Service):
         self._user_agreement_document_da = user_agreement_document_da
 
     @ResultToDict()
-    def agree_document(self, user_id: int, document_id: int):
+    def agree(self, user_id: int, document_id: int):
         return self._user_agreement_document_da.agree(user_id, document_id)
 
     @ResultToDict()
-    def get_agree_document_latest_version(self, name: str):
+    def get_document_latest_version(self, name: str):
         return self._agreement_document.get_latest_version(name)
 
-    def is_agreed_document(self, user_id: int, document_id: int) -> bool:
-        return True if self._user_agreement_document_da.user_agreed_document(user_id, document_id) else False
+    def is_agreed(self, user_id: int, document_id: int) -> bool:
+        return True if self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id) else False
+
+    def is_agreed_by_name(self, user_id: int, document_name: str) -> bool:
+        return True if self._user_agreement_document_da.get_agreed_document_by_name(user_id, document_name) else False

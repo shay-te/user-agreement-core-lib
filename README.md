@@ -29,9 +29,9 @@ file_name = 'privacy_policy'
 document_data = ua_core_lib.seed.seed_document(file_name, version, 'path/to/file', md_content)
 
 # Agreement for documents
-ua_core_lib.agreement.agree_document(user_id, document_data['id'])
-ua_core_lib.agreement.is_agreed_document(user_id,
-                                         document_data['id'])  # Returns True is user has agreed the document
+ua_core_lib.agreement.agree(user_id, document_data['id'])
+ua_core_lib.agreement.get_agreed_document_by_id(user_id,
+                                                document_data['id'])  # Returns True is user has agreed the document
 
 # Seed List and List Items
 list_name = 'terms_service'
@@ -59,7 +59,7 @@ Responsible for agreeing to document and list items
 ## Functions
 
 ```python
-def agree_document(self, user_id: int, document_id: int):
+def agree(self, user_id: int, document_id: int):
 ```
 
 When a user agrees to a document, this method can be invoked, and it stores the document id and user id in the db entity. 
@@ -110,7 +110,7 @@ When the user disagrees an item in the list this method can be invoked to SoftDe
 <br/><br/>
 
 ```python
-def is_agreed_document(self, user_id: int, document_id: int):
+def get_agreed_document_by_id(self, user_id: int, document_id: int):
 ```
 
 To check if the user has agreed to a specific document.

@@ -22,8 +22,8 @@ class TestUACoreLib(unittest.TestCase):
         cls.user3_id = 3
 
     def test_agreement_document(self):
-        version1 = str(datetime.utcnow().timestamp())
-        version2 = str(datetime.utcnow().timestamp() + 100)
+        version1 = 1
+        version2 = 2
         dummy_md = '**some***basic - markdown'
         file_name = 'file_name'
         self.ua_core_lib.seed.seed_document(
@@ -66,13 +66,15 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(document_data['file_text'], dummy_md)
 
         document_id = document_data.get('id')
-        agreed_document = self.ua_core_lib.agreement_document.agree_document(self.user1_id, document_id)
+        agreed_document = self.ua_core_lib.agreement_document.agree(self.user1_id, document_id)
         self.assertIsInstance(agreed_document, dict)
         self.assertEqual(agreed_document['agreement_document_id'], document_id)
         self.assertEqual(agreed_document['user_id'], self.user1_id)
 
-        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_document(self.user1_id, document_id))
-        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_document(self.user2_id, document_id))
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed(self.user2_id, document_id))
+
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name))
 
     def _test_lists(self, list_name: str, agreed_user: int, non_agreed_user: int):
         items_seed = ['item1', 'item2', 'item3', 'item4']
