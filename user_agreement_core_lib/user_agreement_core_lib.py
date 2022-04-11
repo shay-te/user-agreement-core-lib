@@ -37,7 +37,7 @@ class UserAgreementCoreLib(CoreLib):
         self.config = conf
 
         agreement_db_session = SqlAlchemyDataHandlerRegistry(
-            self.config.core_lib.data.agreement_db
+            self.config.core_lib.data.sqlalchemy
         )
         agreement_document = AgreementDocumentDataAccess(agreement_db_session)
         agreement_list = AgreementListDataAccess(agreement_db_session)
@@ -46,7 +46,7 @@ class UserAgreementCoreLib(CoreLib):
         user_agreement_list_item_da = UserAgreementListItemDataAccess(agreement_db_session)
 
         self.agreement_document = AgreementDocumentService(agreement_document, user_agreement_document_da)
-        self.agreement_list = AgreementListService(user_agreement_list_item_da, agreement_list_item)
+        self.agreement_list = AgreementListService(user_agreement_list_item_da, agreement_list_item, agreement_list)
         self.seed = SeedService(
             agreement_document,
             agreement_list,

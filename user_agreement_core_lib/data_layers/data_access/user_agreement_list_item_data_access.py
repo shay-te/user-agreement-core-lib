@@ -34,7 +34,7 @@ class UserAgreementListItemDataAccess(DataAccess):
                 .all()
             )
 
-    def agreed_list_items(self, user_id: int, list_id: int):
+    def user_agreed_list_items(self, user_id: int, list_id: int):
         with self.db_session.get() as session:
             return (
                 session.query(UserAgreementListItem)
