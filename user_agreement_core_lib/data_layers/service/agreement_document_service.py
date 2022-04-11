@@ -17,7 +17,13 @@ class AgreementDocumentService(Service):
 
     @ResultToDict()
     def agree(self, user_id: int, document_id: int):
+        assert self._agreement_document.get(document_id)  # raise 404 when not found
         return self._user_agreement_document_da.agree(user_id, document_id)
+
+    @ResultToDict()
+    def disagree(self, user_id: int, document_id: int):
+        assert self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id)  # raise 404 when not found
+        return self._user_agreement_document_da.delete(user_id, document_id)
 
     @ResultToDict()
     def get_document_latest_version(self, name: str):

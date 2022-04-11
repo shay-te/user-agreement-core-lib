@@ -32,13 +32,7 @@ class TestUACoreLib(unittest.TestCase):
             os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
             dummy_md,
         )
-        with self.assertRaises(Exception):
-            self.ua_core_lib.seed.seed_document(
-                file_name,
-                version1,
-                os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
-                dummy_md,
-            )
+        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name)['version'], version1)
         with self.assertRaises(Exception):
             self.ua_core_lib.seed.seed_document(
                 file_name,
@@ -72,9 +66,22 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(agreed_document['user_id'], self.user1_id)
 
         self.assertTrue(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name))
+        self.ua_core_lib.agreement_document.disagree(self.user1_id, document_id)
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
+
+        with self.assertRaises(AssertionError):
+            self.ua_core_lib.agreement_document.disagree(self.user1_id, -1)
+
+        with self.assertRaises(StatusCodeException):
+            self.ua_core_lib.agreement_document.agree(self.user1_id, -1)
+
+        self.ua_core_lib.agreement_document.agree(self.user1_id, document_id)
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
         self.assertFalse(self.ua_core_lib.agreement_document.is_agreed(self.user2_id, document_id))
 
         self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name))
+        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name)['version'], version2)
 
     def _test_lists(self, list_name: str, agreed_user: int, non_agreed_user: int):
         items_seed = ['item1', 'item2', 'item3', 'item4']
