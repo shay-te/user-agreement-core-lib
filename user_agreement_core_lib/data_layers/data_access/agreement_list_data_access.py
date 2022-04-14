@@ -4,6 +4,7 @@ from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import 
     SqlAlchemyDataHandlerRegistry,
 )
 from core_lib.data_layers.data_access.data_access import DataAccess
+from core_lib.error_handling.not_found_decorator import NotFoundErrorHandler
 
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_list import (
     AgreementList,
@@ -28,3 +29,8 @@ class AgreementListDataAccess(DataAccess):
                 .filter(AgreementList.id == list_id)
                 .update({AgreementList.deleted_at: datetime.utcnow()})
             )
+
+    @NotFoundErrorHandler()
+    def get_by_name(self, list_name: str):
+        with self.db_session.get() as session:
+            return session.query(AgreementList).filter(AgreementList.name == list_name).first()

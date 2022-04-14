@@ -1,14 +1,9 @@
 from datetime import datetime
 
-from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import (
-    SqlAlchemyDataHandlerRegistry,
-)
+from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import SqlAlchemyDataHandlerRegistry
 from core_lib.data_layers.data_access.data_access import DataAccess
 from core_lib.error_handling.not_found_decorator import NotFoundErrorHandler
-from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_list_item import (
-    AgreementListItem,
-)
-
+from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_list_item import AgreementListItem
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreement_list_item import (
     UserAgreementListItem,
 )
@@ -39,7 +34,7 @@ class UserAgreementListItemDataAccess(DataAccess):
                 .all()
             )
 
-    def agreed_list_items(self, user_id: int, list_id: int):
+    def user_agreed_list_items(self, user_id: int, list_id: int):
         with self.db_session.get() as session:
             return (
                 session.query(UserAgreementListItem)
@@ -59,6 +54,7 @@ class UserAgreementListItemDataAccess(DataAccess):
                 .filter(
                     UserAgreementListItem.agreement_list_item_id == item_id,
                     UserAgreementListItem.user_id == user_id,
+                    UserAgreementListItem.deleted_at == None,
                 )
                 .update(
                     {
