@@ -1,4 +1,5 @@
 defaults:
+  - _self_
   - core_lib
   - user_agreement_core_lib
 

@@ -1,5 +1,6 @@
 from core_lib.data_layers.service.service import Service
 from core_lib.data_transform.result_to_dict import result_to_dict, ResultToDict
+from core_lib.error_handling.status_code_exception import StatusCodeException
 from user_agreement_core_lib.data_layers.data_access.agreement_list_data_access import AgreementListDataAccess
 from user_agreement_core_lib.data_layers.data_access.agreement_list_item_data_access import (
     AgreementListItemDataAccess,
@@ -29,6 +30,13 @@ class AgreementListService(Service):
     def disagree_item(self, user_id: int, item_id: int):
         assert self._user_agreement_list_item_da.agreed_user_item(user_id, item_id)  # raise 404 when not found
         return self._user_agreement_list_item_da.delete(user_id, item_id)
+
+    def is_agreed_item(self, user_id: int, item_id: int):
+        try:
+            self._user_agreement_list_item_da.agreed_user_item(user_id, item_id)
+            return True
+        except StatusCodeException as ex:
+            return False
 
     @ResultToDict()
     def agreed_items(self, user_id: int, list_id: int):
