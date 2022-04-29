@@ -136,8 +136,8 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table(AgreementDocument.__tablename__)
-    op.drop_table(AgreementList.__tablename__)
-    op.drop_table(AgreementListItem.__tablename__)
-    op.drop_table(UserAgreementDocument.__tablename__)
     op.drop_table(UserAgreementListItem.__tablename__)
+    op.drop_table(UserAgreementDocument.__tablename__)
+    op.drop_table(AgreementListItem.__tablename__)
+    op.drop_table(AgreementList.__tablename__)
+    op.drop_table(AgreementDocument.__tablename__)
