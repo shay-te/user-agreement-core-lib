@@ -7,8 +7,8 @@ from core_lib.alembic.alembic import Alembic
 from core_lib.core_lib import CoreLib
 
 # template_cache_handler_imports
-from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import (
-    SqlAlchemyDataHandlerRegistry,
+from core_lib.connection.sql_alchemy_connection_registry import (
+    SqlAlchemyConnectionRegistry,
 )
 
 # template_mongo_handler_imports
@@ -36,7 +36,7 @@ class UserAgreementCoreLib(CoreLib):
         super().__init__()
         self.config = conf
 
-        agreement_db_session = SqlAlchemyDataHandlerRegistry(
+        agreement_db_session = SqlAlchemyConnectionRegistry(
             self.config.core_lib.data.sqlalchemy
         )
         agreement_document = AgreementDocumentDataAccess(agreement_db_session)

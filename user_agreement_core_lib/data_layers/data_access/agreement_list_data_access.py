@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import (
-    SqlAlchemyDataHandlerRegistry,
+from core_lib.connection.sql_alchemy_connection_registry import (
+    SqlAlchemyConnectionRegistry,
 )
 from core_lib.data_layers.data_access.data_access import DataAccess
 from core_lib.error_handling.not_found_decorator import NotFoundErrorHandler
@@ -12,7 +12,7 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_li
 
 
 class AgreementListDataAccess(DataAccess):
-    def __init__(self, db: SqlAlchemyDataHandlerRegistry):
+    def __init__(self, db: SqlAlchemyConnectionRegistry):
         self.db_session = db
 
     def add(self, name: str):

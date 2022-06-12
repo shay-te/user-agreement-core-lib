@@ -2,8 +2,8 @@ from datetime import datetime
 
 from sqlalchemy import desc
 
-from core_lib.data_layers.data.handler.sql_alchemy_data_handler_registry import (
-    SqlAlchemyDataHandlerRegistry,
+from core_lib.connection.sql_alchemy_connection_registry import (
+    SqlAlchemyConnectionRegistry,
 )
 from core_lib.data_layers.data_access.data_access import DataAccess
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_document import AgreementDocument
@@ -14,7 +14,7 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreeme
 
 
 class UserAgreementDocumentDataAccess(DataAccess):
-    def __init__(self, db: SqlAlchemyDataHandlerRegistry):
+    def __init__(self, db: SqlAlchemyConnectionRegistry):
         self.db_session = db
 
     def agree(self, user_id: int, document_id: int):
