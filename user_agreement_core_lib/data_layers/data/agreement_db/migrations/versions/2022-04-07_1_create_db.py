@@ -28,16 +28,17 @@ def upgrade():
         AgreementDocument.__tablename__,
         sa.Column(AgreementDocument.id.key, sa.Integer, primary_key=True, nullable=False, autoincrement=True),
         sa.Column(AgreementDocument.name.key, sa.VARCHAR(255), nullable=False),
+        sa.Column(AgreementDocument.version.key, sa.VARCHAR(255), nullable=False),
+        sa.Column(AgreementDocument.language.key, sa.VARCHAR(4), nullable=False),
         sa.Column(AgreementDocument.file.key, sa.LargeBinary, nullable=False,),
         sa.Column(AgreementDocument.file_text.key, sa.TEXT, nullable=False),
-        sa.Column(AgreementDocument.version.key, sa.VARCHAR(255), nullable=False),
         sa.Column(AgreementDocument.created_at.key, sa.DateTime, default=datetime.utcnow),
         sa.Column(
             AgreementDocument.updated_at.key, sa.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow,
         ),
         sa.Column(AgreementDocument.deleted_at.key, sa.DateTime, default=None),
         sa.Index(
-            AgreementDocument.INDEX_DOC_NAME_VERSION, AgreementDocument.name.key, AgreementDocument.version.key,
+            AgreementDocument.INDEX_DOC_NAME_VERSION, AgreementDocument.name.key, AgreementDocument.version.key, AgreementDocument.language.key,
             unique=True,
         ),
     )

@@ -13,8 +13,9 @@ class AgreementDocument(Base, SoftDeleteMixin):
 
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(VARCHAR(length=255), nullable=False)
+    version = Column(Integer, nullable=False)
+    language = Column(VARCHAR(length=4), nullable=False)
     file = Column(LargeBinary, nullable=False)
     file_text = Column(TEXT, nullable=False)
-    version = Column(Integer, nullable=False)
 
-    __table_args__ = (Index(INDEX_DOC_NAME_VERSION, name, version, unique=True),)
+    __table_args__ = (Index(INDEX_DOC_NAME_VERSION, name, version, language, unique=True),)

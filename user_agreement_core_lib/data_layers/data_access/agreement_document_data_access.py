@@ -20,9 +20,9 @@ class AgreementDocumentDataAccess(CRUDSoftDeleteDataAccess):
         CRUD.__init__(self, AgreementDocument, db, rule_validator)
 
     @NotFoundErrorHandler()
-    def get_latest_version(self, document_name: str):
+    def get_latest_version(self, document_name: str, language: str):
         with self._db.get() as session:
             return session.query(AgreementDocument) \
-                          .filter(AgreementDocument.name == document_name) \
+                          .filter(AgreementDocument.name == document_name, AgreementDocument.language == language) \
                           .order_by(desc(AgreementDocument.version)) \
                           .first()

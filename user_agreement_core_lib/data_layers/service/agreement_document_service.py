@@ -26,8 +26,8 @@ class AgreementDocumentService(Service):
         return self._user_agreement_document_da.delete(user_id, document_id)
 
     @ResultToDict()
-    def get_document_latest_version(self, name: str):
-        return self._agreement_document.get_latest_version(name)
+    def get_document_latest_version(self, name: str, language: str):
+        return self._agreement_document.get_latest_version(name, language)
 
     def is_agreed(self, user_id: int, document_id: int) -> bool:
         return True if self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id) else False

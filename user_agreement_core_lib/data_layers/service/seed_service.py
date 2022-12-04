@@ -23,16 +23,17 @@ class SeedService(Service):
         self._agreement_list_item = agreement_list_item
 
     @ResultToDict()
-    def seed_document(self, name: str, version: str, file_path: str, file_text_content: str):
+    def seed_document(self, name: str, version: str, language: str, file_path: str, file_text_content: str):
         assert name and version and file_path and file_text_content
         with open(file_path, 'rb') as file:
             data_blob = file.read()
             return self._agreement_document.create(
                 {
                     'name': name,
+                    'version': version,
+                    'language': language,
                     'file_text': file_text_content,
                     'file': data_blob,
-                    'version': version,
                 }
             )
 
