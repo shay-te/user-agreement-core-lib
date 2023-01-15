@@ -35,13 +35,14 @@ class UserAgreementDocumentDataAccess(DataAccess):
                 .first()
             )
 
-    def get_agreed_document_by_name(self, user_id: int, document_name: str):
+    def get_agreed_document_by_name(self, user_id: int, document_name: str, language: str):
         with self.db_session.get() as session:
             return (
                 session.query(UserAgreementDocument)
                 .join(AgreementDocument)
                 .filter(UserAgreementDocument.user_id == user_id,
                         AgreementDocument.name == document_name,
+                        AgreementDocument.language == language,
                         UserAgreementDocument.deleted_at == None)
                 .order_by(desc(AgreementDocument.version))
                 .first()
