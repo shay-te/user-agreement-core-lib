@@ -97,7 +97,7 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(UserAgreementDocument.deleted_at.key, sa.DateTime, default=None),
-        sa.Column(UserAgreementDocument.deleted_at_token.key, sa.Integer, default=None),
+        sa.Column(UserAgreementDocument.deleted_at_token.key, sa.Integer, default=0),
         sa.Index(
             UserAgreementDocument.INDEX_USER_DOCUMENT_ID,
             UserAgreementDocument.user_id.key,
@@ -125,7 +125,7 @@ def upgrade():
             onupdate=datetime.utcnow,
         ),
         sa.Column(UserAgreementListItem.deleted_at.key, sa.DateTime, default=None),
-        sa.Column(UserAgreementListItem.deleted_at_token.key, sa.Integer, default=None),
+        sa.Column(UserAgreementListItem.deleted_at_token.key, sa.Integer, default=0),
         sa.Index(
             UserAgreementListItem.INDEX_USER_ITEM_ID,
             UserAgreementListItem.user_id.key,
