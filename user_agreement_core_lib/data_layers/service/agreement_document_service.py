@@ -42,3 +42,6 @@ class AgreementDocumentService(Service):
 
     def is_agreed_by_name(self, user_id: int, document_name: str, language: str) -> bool:
         return True if self._user_agreement_document_da.get_agreed_document_by_name(user_id, document_name, language) else False
+
+    def get_document_id_by_name(self, document_name: str, language: str):
+        return self._user_agreement_document_da.get_document_id_by_name(document_name, language)

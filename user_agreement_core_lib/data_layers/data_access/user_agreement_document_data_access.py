@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import desc
 
@@ -61,4 +62,17 @@ class UserAgreementDocumentDataAccess(DataAccess):
                         UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
                     }
                 )
+            )
+
+    def get_document_id_by_name(self, document_name: str, language: str) -> Optional[int]:
+        with self.db_session.get() as session:
+            return (
+                session.query(AgreementDocument.id)
+                .filter(
+                    AgreementDocument.name == document_name,
+                    AgreementDocument.language == language
+                )
+                .order_by(desc(AgreementDocument.version))
+                .limit(1)
+                .scalar()
             )
