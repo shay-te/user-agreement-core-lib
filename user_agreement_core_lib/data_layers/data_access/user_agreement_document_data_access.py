@@ -44,7 +44,8 @@ class UserAgreementDocumentDataAccess(DataAccess):
                 .filter(UserAgreementDocument.user_id == user_id,
                         AgreementDocument.name == document_name,
                         AgreementDocument.language == language,
-                        UserAgreementDocument.deleted_at == None)
+                        UserAgreementDocument.deleted_at == None,
+                        AgreementDocument.deleted_at == None)
                 .order_by(desc(AgreementDocument.version))
                 .first()
             )
@@ -70,7 +71,8 @@ class UserAgreementDocumentDataAccess(DataAccess):
                 session.query(AgreementDocument.id)
                 .filter(
                     AgreementDocument.name == document_name,
-                    AgreementDocument.language == language
+                    AgreementDocument.language == language,
+                    AgreementDocument.deleted_at == None,
                 )
                 .order_by(desc(AgreementDocument.version))
                 .limit(1)
