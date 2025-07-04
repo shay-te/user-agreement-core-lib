@@ -13,9 +13,6 @@ class UserAgreementDocument(Base, SoftDeleteMixin, SoftDeleteTokenMixin):
     INDEX_USER_DOCUMENT_ID = 'user_id_agreement_document_id'
 
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    # TODO: ask shay if to make column foreignKey
-    #   if yes: there is user_id that not exists in admin_user - what is that means?
-    # user_id = Column(Integer, ForeignKey('admin_user.id'), nullable=False)
     user_id = Column(Integer, nullable=False)
     agreement_document_id = Column(Integer, ForeignKey('agreement_document.id'), nullable=False)
     is_agreed = Column(BOOLEAN(), nullable=False, default=False)
