@@ -1,9 +1,9 @@
 # @package _global_
 core_lib:
   data:
-    dbsqlalchemy:
+    sqlalchemy:
       log_queries: false
-      create_db: true
+      create_db: false
       session:
         pool_recycle: 3200
         pool_pre_ping: false
