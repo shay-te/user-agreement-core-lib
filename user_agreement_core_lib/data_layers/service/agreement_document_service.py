@@ -20,8 +20,12 @@ class AgreementDocumentService(Service):
         assert self._agreement_document.get(document_id)  # raise 404 when not found
 
         existing = self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id)
+
         if existing and existing.is_agreed:
             return existing
+
+        if existing:
+            self._user_agreement_document_da.delete(user_id, document_id)
 
         return self._user_agreement_document_da.set_agreement(user_id, document_id, True)
 
