@@ -65,4 +65,4 @@ class UserAgreementDocumentDataAccess(DataAccess):
             ).update({
                 UserAgreementDocument.deleted_at: datetime.utcnow(),
                 UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
-            }) > 0
+            })
