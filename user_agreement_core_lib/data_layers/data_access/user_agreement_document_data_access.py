@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy import desc
 
@@ -18,21 +17,27 @@ class UserAgreementDocumentDataAccess(DataAccess):
     def __init__(self, db: SqlAlchemyConnectionRegistry):
         self.db_session = db
 
-    def agree(self, user_id: int, document_id: int):
+    def set_agreement(self, user_id: int, document_id: int, is_agreed: bool = False):
         with self.db_session.get() as session:
-            entity = UserAgreementDocument()
-            entity.user_id = user_id
-            entity.agreement_document_id = document_id
-            session.add(entity)
-        return entity
+            agreement = UserAgreementDocument()
+            agreement.user_id = user_id
+            agreement.agreement_document_id = document_id
+            agreement.is_agreed = is_agreed
+            agreement.signed_at = datetime.utcnow() if is_agreed else None
+
+            session.add(agreement)
+            session.commit()
+            return agreement
 
     def get_agreed_document_by_id(self, user_id: int, doc_id: int):
         with self.db_session.get() as session:
             return (
                 session.query(UserAgreementDocument)
-                .filter(UserAgreementDocument.user_id == user_id,
-                        UserAgreementDocument.agreement_document_id == doc_id,
-                        UserAgreementDocument.deleted_at == None)
+                .filter(
+                    UserAgreementDocument.user_id == user_id,
+                    UserAgreementDocument.agreement_document_id == doc_id,
+                    UserAgreementDocument.deleted_at == None
+                )
                 .first()
             )
 
@@ -41,40 +46,23 @@ class UserAgreementDocumentDataAccess(DataAccess):
             return (
                 session.query(UserAgreementDocument)
                 .join(AgreementDocument)
-                .filter(UserAgreementDocument.user_id == user_id,
-                        AgreementDocument.name == document_name,
-                        AgreementDocument.language == language,
-                        UserAgreementDocument.deleted_at == None,
-                        AgreementDocument.deleted_at == None)
+                .filter(
+                    UserAgreementDocument.user_id == user_id,
+                    AgreementDocument.name == document_name,
+                    AgreementDocument.language == language,
+                    UserAgreementDocument.deleted_at == None
+                )
                 .order_by(desc(AgreementDocument.version))
                 .first()
             )
 
     def delete(self, user_id: int, document_id: int):
         with self.db_session.get() as session:
-            return (
-                session.query(UserAgreementDocument)
-                .filter(UserAgreementDocument.agreement_document_id == document_id,
-                        UserAgreementDocument.user_id == user_id,
-                        UserAgreementDocument.deleted_at == None)
-                .update(
-                    {
-                        UserAgreementDocument.deleted_at: datetime.utcnow(),
-                        UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
-                    }
-                )
-            )
-
-    def get_document_id_by_name(self, document_name: str, language: str) -> Optional[int]:
-        with self.db_session.get() as session:
-            return (
-                session.query(AgreementDocument.id)
-                .filter(
-                    AgreementDocument.name == document_name,
-                    AgreementDocument.language == language,
-                    AgreementDocument.deleted_at == None,
-                )
-                .order_by(desc(AgreementDocument.version))
-                .limit(1)
-                .scalar()
-            )
+            return session.query(UserAgreementDocument).filter(
+                UserAgreementDocument.agreement_document_id == document_id,
+                UserAgreementDocument.user_id == user_id,
+                UserAgreementDocument.deleted_at == None
+            ).update({
+                UserAgreementDocument.deleted_at: datetime.utcnow(),
+                UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
+            })

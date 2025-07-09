@@ -60,3 +60,11 @@ class UserAgreementCoreLib(CoreLib):
     @staticmethod
     def uninstall(cfg: DictConfig):
         Alembic(os.path.dirname(inspect.getfile(UserAgreementCoreLib)), cfg).downgrade()
+
+    @staticmethod
+    def create(cfg: DictConfig, name: str):
+        Alembic(os.path.dirname(inspect.getfile(UserAgreementCoreLib)), cfg).create_migration(name)
+
+    @staticmethod
+    def downgrade(cfg: DictConfig):
+        Alembic(os.path.dirname(inspect.getfile(UserAgreementCoreLib)), cfg).downgrade("-1")
