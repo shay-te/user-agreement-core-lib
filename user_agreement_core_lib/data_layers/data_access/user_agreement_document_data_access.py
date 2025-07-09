@@ -29,23 +29,14 @@ class UserAgreementDocumentDataAccess(DataAccess):
             session.commit()
             return agreement
 
-    def get_agreed_document_by_id(self, user_id: int, doc_id: int):
-        with self.db_session.get() as session:
-            return (
-                session.query(UserAgreementDocument)
-                .filter(
-                    UserAgreementDocument.user_id == user_id,
-                    UserAgreementDocument.agreement_document_id == doc_id,
-                    UserAgreementDocument.deleted_at == None
-                )
-                .first()
-            )
-
     def get_agreed_document_by_name(self, user_id: int, document_name: str, language: str):
         with self.db_session.get() as session:
             return (
                 session.query(UserAgreementDocument)
-                .join(AgreementDocument)
+                .join(
+                    AgreementDocument,
+                    UserAgreementDocument.agreement_document_id == AgreementDocument.id
+                )
                 .filter(
                     UserAgreementDocument.user_id == user_id,
                     AgreementDocument.name == document_name,

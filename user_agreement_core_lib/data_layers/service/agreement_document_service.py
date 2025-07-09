@@ -16,10 +16,10 @@ class AgreementDocumentService(Service):
         self._user_agreement_document_da = user_agreement_document_da
 
     @ResultToDict()
-    def agree(self, user_id: int, document_id: int):
+    def agree(self, user_id: int, document_name: str, language: str, document_id: int):
         assert self._agreement_document.get(document_id)  # raise 404 when not found
 
-        existing = self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id)
+        existing = self._user_agreement_document_da.get_agreed_document_by_name(user_id=user_id,document_name= document_name, language=language)
 
         if existing and existing.is_agreed:
             return existing
@@ -30,10 +30,10 @@ class AgreementDocumentService(Service):
         return self._user_agreement_document_da.set_agreement(user_id, document_id, True)
 
     @ResultToDict()
-    def disagree(self, user_id: int, document_id: int):
+    def disagree(self, user_id: int, document_name: str, language: str, document_id: int):
         assert self._agreement_document.get(document_id)  # raise 404 when not found
 
-        existing = self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id)
+        existing = self._user_agreement_document_da.get_agreed_document_by_name(user_id=user_id, document_name=document_name, language=language)
 
         if existing and not existing.is_agreed:
             return existing
@@ -47,11 +47,5 @@ class AgreementDocumentService(Service):
     def get_document_latest_version(self, name: str, language: str):
         return self._agreement_document.get_latest_version(name, language)
 
-    def is_agreed(self, user_id: int, document_id: int) -> bool:
-        return True if self._user_agreement_document_da.get_agreed_document_by_id(user_id, document_id) else False
-
     def is_agreed_by_name(self, user_id: int, document_name: str, language: str) -> bool:
         return True if self._user_agreement_document_da.get_agreed_document_by_name(user_id, document_name, language) else False
-
-    def get_document_id_by_name(self, document_name: str, language: str):
-        return self._user_agreement_document_da.get_document_id_by_name(document_name, language)

@@ -1,5 +1,7 @@
 from core_lib.data_layers.service.service import Service
 from core_lib.data_transform.result_to_dict import ResultToDict, result_to_dict
+
+from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_document import AgreementDocument
 from user_agreement_core_lib.data_layers.data_access.agreement_document_data_access import (
     AgreementDocumentDataAccess,
 )
@@ -23,24 +25,19 @@ class SeedService(Service):
         self._agreement_list_item = agreement_list_item
 
     @ResultToDict()
-    def seed_document(self, name: str, language: str, file_path: str, file_text_content: str):
-        assert name and file_path and file_text_content
+    def seed_document(self, name: str, version: str, language: str, file_path: str, file_text_content: str):
+        assert name and version and file_path and file_text_content
         with open(file_path, 'rb') as file:
             data_blob = file.read()
-
-        latest = self._agreement_document.get_latest_version(name, language)
-        version = 1
-        if latest:
-            version = int(latest.version) +1
-            self._agreement_document.delete(latest.id)
-
-        return self._agreement_document.create({
-            'name': name,
-            'version': str(version),
-            'language': language,
-            'file': data_blob,
-            'file_text': file_text_content,
-        })
+            return self._agreement_document.create(
+                {
+                    'name': name,
+                    'version': version,
+                    'language': language,
+                    'file_text': file_text_content,
+                    'file': data_blob,
+                }
+            )
 
     def seed_agreement_list(self, agreement_list_name: str, agreement_list_items: list = []):
         assert agreement_list_name
@@ -51,3 +48,21 @@ class SeedService(Service):
                 list_items.append(result_to_dict(self._agreement_list_item.add(list_data['id'], item)))
         list_data.setdefault('list_items', list_items)
         return list_data
+
+    @ResultToDict()
+    def update_document(self, agreement_doc: AgreementDocument, file_path: str, file_text_content: str):
+        assert agreement_doc
+
+        with open(file_path, 'rb') as file:
+            data_blob = file.read()
+
+        update_data = {
+            'name': agreement_doc[AgreementDocument.name.key],
+            'version': agreement_doc[AgreementDocument.version.key],
+            'language': agreement_doc[AgreementDocument.language.key],
+            'file_text': file_text_content,
+            'file': data_blob,
+            'deleted_at': None,
+        }
+
+        return self._agreement_document.update(agreement_doc[AgreementDocument.id.key], update_data)
