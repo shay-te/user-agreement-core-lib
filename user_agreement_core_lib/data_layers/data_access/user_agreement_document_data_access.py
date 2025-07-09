@@ -19,33 +19,15 @@ class UserAgreementDocumentDataAccess(DataAccess):
 
     def set_agreement(self, user_id: int, document_id: int, is_agreed: bool = False):
         with self.db_session.get() as session:
-            existing = (
-                session.query(UserAgreementDocument)
-                .filter(
-                    UserAgreementDocument.user_id == user_id,
-                    UserAgreementDocument.agreement_document_id == document_id,
-                    UserAgreementDocument.deleted_at == None
-                )
-                .first()
-            )
+            agreement = UserAgreementDocument()
+            agreement.user_id = user_id
+            agreement.agreement_document_id = document_id
+            agreement.is_agreed = is_agreed
+            agreement.signed_at = datetime.utcnow() if is_agreed else None
 
-            if existing:
-                # Update existing record
-                existing.is_agreed = is_agreed
-                existing.signed_at = datetime.utcnow() if is_agreed else None
-                session.commit()
-                return existing
-            else:
-                # Create new record
-                agreement = UserAgreementDocument()
-                agreement.is_agreed = is_agreed
-                agreement.user_id = user_id
-                agreement.agreement_document_id = document_id
-                agreement.signed_at = datetime.utcnow() if is_agreed else None
-
-                session.add(agreement)
-                session.commit()
-                return agreement
+            session.add(agreement)
+            session.commit()
+            return agreement
 
     def get_agreed_document_by_id(self, user_id: int, doc_id: int):
         with self.db_session.get() as session:
@@ -74,20 +56,13 @@ class UserAgreementDocumentDataAccess(DataAccess):
                 .first()
             )
 
-
     def delete(self, user_id: int, document_id: int):
         with self.db_session.get() as session:
-            updated_count = (
-                session.query(UserAgreementDocument)
-                .filter(
-                    UserAgreementDocument.agreement_document_id == document_id,
-                    UserAgreementDocument.user_id == user_id,
-                    UserAgreementDocument.deleted_at == None
-                )
-                .update({
-                    UserAgreementDocument.deleted_at: datetime.utcnow(),
-                    UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
-                })
-            )
-            session.commit()
-            return updated_count > 0
+            return session.query(UserAgreementDocument).filter(
+                UserAgreementDocument.agreement_document_id == document_id,
+                UserAgreementDocument.user_id == user_id,
+                UserAgreementDocument.deleted_at == None
+            ).update({
+                UserAgreementDocument.deleted_at: datetime.utcnow(),
+                UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
+            }) > 0
