@@ -9,7 +9,7 @@ core_lib:
         pool_pre_ping: false
       url:
         protocol: sqlite
-        file: ~
+        file: user_agreement_tests
         username: ~
         password: ~
         port: ~
