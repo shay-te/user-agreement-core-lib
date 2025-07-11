@@ -25,7 +25,7 @@ class SeedService(Service):
         self._agreement_list_item = agreement_list_item
 
     @ResultToDict()
-    def seed_document(self, name: str, version: str, language: str, file_path: str, file_text_content: str):
+    def seed_document(self, name: str, version: int, language: str, file_path: str, file_text_content: str):
         assert name and version and file_path and file_text_content
         with open(file_path, 'rb') as file:
             data_blob = file.read()
@@ -48,21 +48,3 @@ class SeedService(Service):
                 list_items.append(result_to_dict(self._agreement_list_item.add(list_data['id'], item)))
         list_data.setdefault('list_items', list_items)
         return list_data
-
-    @ResultToDict()
-    def update_document(self, agreement_doc: AgreementDocument, file_path: str, file_text_content: str):
-        assert agreement_doc
-
-        with open(file_path, 'rb') as file:
-            data_blob = file.read()
-
-        update_data = {
-            'name': agreement_doc[AgreementDocument.name.key],
-            'version': agreement_doc[AgreementDocument.version.key],
-            'language': agreement_doc[AgreementDocument.language.key],
-            'file_text': file_text_content,
-            'file': data_blob,
-            'deleted_at': None,
-        }
-
-        return self._agreement_document.update(agreement_doc[AgreementDocument.id.key], update_data)
