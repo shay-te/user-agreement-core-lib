@@ -41,7 +41,8 @@ class UserAgreementDocumentDataAccess(DataAccess):
                     UserAgreementDocument.user_id == user_id,
                     AgreementDocument.name == document_name,
                     AgreementDocument.language == language,
-                    UserAgreementDocument.deleted_at == None
+                    UserAgreementDocument.deleted_at == None,
+                    AgreementDocument.deleted_at == None,
                 )
                 .order_by(desc(AgreementDocument.version))
                 .first()

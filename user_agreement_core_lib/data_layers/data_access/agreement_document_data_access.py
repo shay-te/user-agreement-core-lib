@@ -23,6 +23,6 @@ class AgreementDocumentDataAccess(CRUDSoftDeleteDataAccess):
     def get_latest_version(self, document_name: str, language: str):
         with self._db.get() as session:
             return session.query(AgreementDocument) \
-                          .filter(AgreementDocument.name == document_name, AgreementDocument.language == language) \
+                          .filter(AgreementDocument.name == document_name, AgreementDocument.language == language ,AgreementDocument.deleted_at == None) \
                           .order_by(desc(AgreementDocument.version)) \
                           .first()
