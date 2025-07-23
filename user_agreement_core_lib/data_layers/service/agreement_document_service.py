@@ -1,11 +1,7 @@
 from core_lib.data_layers.service.service import Service
 from core_lib.data_transform.result_to_dict import ResultToDict
-
-from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_document import AgreementDocument
 from user_agreement_core_lib.data_layers.data_access.agreement_document_data_access import AgreementDocumentDataAccess
-from user_agreement_core_lib.data_layers.data_access.user_agreement_document_data_access import (
-    UserAgreementDocumentDataAccess,
-)
+from user_agreement_core_lib.data_layers.data_access.user_agreement_document_data_access import UserAgreementDocumentDataAccess
 
 
 class AgreementDocumentService(Service):
