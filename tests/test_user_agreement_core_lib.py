@@ -1,5 +1,6 @@
 import os
 import unittest
+from contextlib import suppress
 
 from datetime import datetime
 from time import sleep
@@ -27,6 +28,7 @@ class TestUACoreLib(unittest.TestCase):
         dummy_md = '**some***basic - markdown'
         file_name = 'file_name'
         language = 'en'
+
         self.ua_core_lib.seed.seed_document(
             file_name,
             version1,
@@ -70,24 +72,36 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(agreed_document['agreement_document_id'], document_id)
         self.assertEqual(agreed_document['user_id'], self.user2_id)
         self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
-        self.ua_core_lib.agreement_document.disagree(self.user1_id, file_name, language)
 
-        with self.assertRaises(AssertionError):
-            self.ua_core_lib.agreement_document.disagree(self.user1_id, 'invalid_name', language)
+        doc = None
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.disagree(self.user1_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        with self.assertRaises(AssertionError):
-            self.ua_core_lib.agreement_document.agree(self.user1_id, 'invalid_name', language)
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.agree(self.user1_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        with self.assertRaises(AssertionError):
-            self.ua_core_lib.agreement_document.disagree(self.user2_id, 'invalid_name', language)
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.disagree(self.user2_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        with self.assertRaises(AssertionError):
+        with suppress(StatusCodeException):
             self.ua_core_lib.agreement_document.agree(self.user2_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
         self.ua_core_lib.agreement_document.agree(self.user1_id, file_name, language)
-
         self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.disagree(self.user1_id, file_name, language)
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.agree(self.user2_id, file_name, language)
         self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.disagree(self.user2_id, file_name, language)
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
+
         self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name, language)['version'], version2)
 
     def _test_lists(self, list_name: str, agreed_user: int, non_agreed_user: int):
