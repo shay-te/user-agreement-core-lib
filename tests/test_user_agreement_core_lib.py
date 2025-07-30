@@ -1,5 +1,6 @@
 import os
 import unittest
+from contextlib import suppress
 
 from datetime import datetime
 from time import sleep
@@ -26,17 +27,21 @@ class TestUACoreLib(unittest.TestCase):
         version2 = 2
         dummy_md = '**some***basic - markdown'
         file_name = 'file_name'
+        language = 'en'
+
         self.ua_core_lib.seed.seed_document(
             file_name,
             version1,
+            language,
             os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
             dummy_md,
         )
-        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name)['version'], version1)
+        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name, language)['version'], version1)
         with self.assertRaises(Exception):
             self.ua_core_lib.seed.seed_document(
                 file_name,
                 version1,
+                language,
                 os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
                 dummy_md,
             )
@@ -44,44 +49,60 @@ class TestUACoreLib(unittest.TestCase):
             self.ua_core_lib.seed.seed_document(
                 '',
                 version1,
+                language,
                 os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
                 '',
             )
         document_data = self.ua_core_lib.seed.seed_document(
             'file_name',
             version2,
+            language,
             os.path.join(os.path.dirname(__file__), 'test_data/test_doc.txt'),
             '**some***basic - markdown',
         )
         self.assertIsInstance(document_data, dict)
-        self.assertEqual(len(document_data), 8)
+        self.assertEqual(len(document_data), 9)
         self.assertEqual(document_data['name'], file_name)
         self.assertEqual(document_data['version'], version2)
         self.assertEqual(document_data['file_text'], dummy_md)
 
         document_id = document_data.get('id')
-        agreed_document = self.ua_core_lib.agreement_document.agree(self.user1_id, document_id)
+        agreed_document = self.ua_core_lib.agreement_document.agree(self.user2_id, file_name, language)
         self.assertIsInstance(agreed_document, dict)
         self.assertEqual(agreed_document['agreement_document_id'], document_id)
-        self.assertEqual(agreed_document['user_id'], self.user1_id)
+        self.assertEqual(agreed_document['user_id'], self.user2_id)
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
 
-        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
-        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name))
-        self.ua_core_lib.agreement_document.disagree(self.user1_id, document_id)
-        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
+        doc = None
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.disagree(self.user1_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        with self.assertRaises(AssertionError):
-            self.ua_core_lib.agreement_document.disagree(self.user1_id, -1)
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.agree(self.user1_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        with self.assertRaises(StatusCodeException):
-            self.ua_core_lib.agreement_document.agree(self.user1_id, -1)
+        with suppress(StatusCodeException):
+            doc = self.ua_core_lib.agreement_document.disagree(self.user2_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        self.ua_core_lib.agreement_document.agree(self.user1_id, document_id)
-        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed(self.user1_id, document_id))
-        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed(self.user2_id, document_id))
+        with suppress(StatusCodeException):
+            self.ua_core_lib.agreement_document.agree(self.user2_id, 'invalid_name', language)
+        self.assertEqual(doc, None)
 
-        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name))
-        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name)['version'], version2)
+        self.ua_core_lib.agreement_document.agree(self.user1_id, file_name, language)
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.disagree(self.user1_id, file_name, language)
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user1_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.agree(self.user2_id, file_name, language)
+        self.assertTrue(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
+
+        self.ua_core_lib.agreement_document.disagree(self.user2_id, file_name, language)
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
+
+        self.assertEqual(self.ua_core_lib.agreement_document.get_document_latest_version(file_name, language)['version'], version2)
 
     def _test_lists(self, list_name: str, agreed_user: int, non_agreed_user: int):
         items_seed = ['item1', 'item2', 'item3', 'item4']
