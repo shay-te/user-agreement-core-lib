@@ -66,6 +66,7 @@ class TestUACoreLib(unittest.TestCase):
         self.assertEqual(document_data['version'], version2)
         self.assertEqual(document_data['file_text'], dummy_md)
 
+        self.assertFalse(self.ua_core_lib.agreement_document.is_agreed_by_name(self.user2_id, file_name, language))
         document_id = document_data.get('id')
         agreed_document = self.ua_core_lib.agreement_document.agree(self.user2_id, file_name, language)
         self.assertIsInstance(agreed_document, dict)
