@@ -2,18 +2,20 @@
 core_lib:
   data:
     sqlalchemy:
-      log_queries: false
-      create_db: false
-      session:
-        pool_recycle: 3200
-        pool_pre_ping: false
-      url:
-        file: ${oc.env:POSTGRES_DB}
-        protocol: postgresql
-        username: ${oc.env:POSTGRES_USER}
-        password: ${oc.env:POSTGRES_PASSWORD}
-        port: ${oc.env:POSTGRES_PORT}
-        host: ${oc.env:POSTGRES_HOST}
+      _target_: core_lib.connection.sql_alchemy_connection_factory.SqlAlchemyConnectionFactory
+      config:
+        log_queries: false
+        create_db: false
+        session:
+          pool_recycle: 3200
+          pool_pre_ping: false
+        url:
+          protocol: postgresql
+          username: ${oc.env:POSTGRES_USER}
+          password: ${oc.env:POSTGRES_PASSWORD}
+          host: ${oc.env:POSTGRES_HOST}
+          port: ${oc.env:POSTGRES_PORT}
+          file: ${oc.env:POSTGRES_DB}
   alembic:
     script_location: data_layers/data/agreement_db/migrations
     version_table: user_agreement_alembic_version
