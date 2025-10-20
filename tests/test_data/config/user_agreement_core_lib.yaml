@@ -2,17 +2,19 @@
 core_lib:
   data:
     sqlalchemy:
-      log_queries: false
-      create_db: true
-      session:
-        pool_recycle: 3200
-        pool_pre_ping: false
-      url:
-        protocol: sqlite
-        file: user_agreement_tests
-        username: ~
-        password: ~
-        port: ~
-        host: ~
+      _target_: core_lib.connection.sql_alchemy_connection_factory.SqlAlchemyConnectionFactory
+      config:
+        log_queries: false
+        create_db: true
+        session:
+          pool_recycle: 3200
+          pool_pre_ping: false
+        url:
+          protocol: sqlite
+          file: user_agreement_tests
+          username: ~
+          password: ~
+          port: ~
+          host: ~
   alembic:
     script_location: data_layers/data/agreement_db/migrations

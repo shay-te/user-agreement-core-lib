@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from core_lib.connection.sql_alchemy_connection_registry import SqlAlchemyConnectionRegistry
+from core_lib.connection.sql_alchemy_connection_factory import SqlAlchemyConnectionFactory
 from core_lib.data_layers.data_access.data_access import DataAccess
 from core_lib.error_handling.not_found_decorator import NotFoundErrorHandler
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_list_item import AgreementListItem
@@ -10,7 +10,7 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreeme
 
 
 class UserAgreementListItemDataAccess(DataAccess):
-    def __init__(self, db: SqlAlchemyConnectionRegistry):
+    def __init__(self, db: SqlAlchemyConnectionFactory):
         self.db_session = db
 
     def agree(self, user_id: int, item_id: int):
