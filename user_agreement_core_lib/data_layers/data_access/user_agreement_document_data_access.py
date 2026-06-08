@@ -11,6 +11,9 @@ from user_agreement_core_lib.data_layers.data.agreement_db.entities.agreement_do
 from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreement_document import (
     UserAgreementDocument,
 )
+from user_agreement_core_lib.data_layers.data.agreement_db.entities.user_agreement_list_item import (
+    UserAgreementListItem,
+)
 
 
 class UserAgreementDocumentDataAccess(DataAccess):
@@ -58,3 +61,30 @@ class UserAgreementDocumentDataAccess(DataAccess):
                 UserAgreementDocument.deleted_at: datetime.utcnow(),
                 UserAgreementDocument.deleted_at_token: int(datetime.utcnow().timestamp()),
             })
+
+    def delete_by_user_ids(self, user_ids: list):
+        if not user_ids:
+            return
+        now = datetime.utcnow()
+        now_token = int(now.timestamp())
+        with self.db_session.get() as session:
+            session.query(UserAgreementListItem).filter(
+                UserAgreementListItem.user_id.in_(user_ids),
+                UserAgreementListItem.deleted_at_token == 0,
+            ).update(
+                {
+                    UserAgreementListItem.deleted_at: now,
+                    UserAgreementListItem.deleted_at_token: now_token,
+                },
+                synchronize_session=False,
+            )
+            session.query(UserAgreementDocument).filter(
+                UserAgreementDocument.user_id.in_(user_ids),
+                UserAgreementDocument.deleted_at_token == 0,
+            ).update(
+                {
+                    UserAgreementDocument.deleted_at: now,
+                    UserAgreementDocument.deleted_at_token: now_token,
+                },
+                synchronize_session=False,
+            )
