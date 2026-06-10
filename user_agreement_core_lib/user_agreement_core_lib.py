@@ -53,6 +53,12 @@ class UserAgreementCoreLib(CoreLib):
             agreement_list_item,
         )
 
+    def delete_by_user_id(self, user_id: int):
+        # Orchestrates user-keyed cleanup across both user-agreement domains
+        # (documents + list items) so callers get a single entry point.
+        self.agreement_document.delete_by_user_id(user_id)
+        self.agreement_list.delete_by_user_id(user_id)
+
     @staticmethod
     def install(cfg: DictConfig):
         Alembic(os.path.dirname(inspect.getfile(UserAgreementCoreLib)), cfg).upgrade()
