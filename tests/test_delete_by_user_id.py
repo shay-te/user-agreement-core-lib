@@ -75,7 +75,8 @@ class TestDeleteByUserId(unittest.TestCase):
         self.assertGreater(self._active_doc_count(doc_db, self.user_id), 0)
         self.assertGreater(self._active_item_count(item_db, self.user_id), 0)
 
-        self.ua_core_lib.agreement_document.delete_by_user_id(self.user_id)
+        # Orchestrator fans out to BOTH documents and list items.
+        self.ua_core_lib.delete_by_user_id(self.user_id)
 
         self.assertEqual(self._active_doc_count(doc_db, self.user_id), 0)
         self.assertEqual(self._active_item_count(item_db, self.user_id), 0)
