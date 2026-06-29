@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy import func
+
 from core_lib.connection.sql_alchemy_connection_factory import SqlAlchemyConnectionFactory
 from core_lib.data_layers.data_access.data_access import DataAccess
 from core_lib.error_handling.not_found_decorator import NotFoundErrorHandler
@@ -62,4 +64,27 @@ class UserAgreementListItemDataAccess(DataAccess):
                         UserAgreementListItem.deleted_at_token: int(datetime.utcnow().timestamp()),
                     }
                 )
+            )
+
+    def delete_by_user_id(self, user_id: int):
+        with self.db_session.get() as session:
+            # Index (user_id, agreement_list_item_id, deleted_at_token) is UNIQUE: a
+            # pre-existing soft-deleted row stamped in the same UTC second would
+            # collide. Bump past the max existing token for this user.
+            existing_max = (
+                session.query(func.max(UserAgreementListItem.deleted_at_token))
+                .filter(UserAgreementListItem.user_id == user_id)
+                .scalar()
+            ) or 0
+            now = datetime.utcnow()
+            now_token = max(int(now.timestamp()), existing_max + 1)
+            session.query(UserAgreementListItem).filter(
+                UserAgreementListItem.user_id == user_id,
+                UserAgreementListItem.deleted_at_token == 0,
+            ).update(
+                {
+                    UserAgreementListItem.deleted_at: now,
+                    UserAgreementListItem.deleted_at_token: now_token,
+                },
+                synchronize_session=False,
             )

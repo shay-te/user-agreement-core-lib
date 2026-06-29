@@ -50,6 +50,9 @@ class AgreementListService(Service):
     def list_by_name(self, list_name: str):
         return self._agreement_list.get_by_name(list_name)
 
+    def delete_by_user_id(self, user_id: int):
+        return self._user_agreement_list_item_da.delete_by_user_id(user_id)
+
     def is_agreed_list(self, user_id, list_id: int) -> bool:
         items_list = set()
         user_items_list = set()

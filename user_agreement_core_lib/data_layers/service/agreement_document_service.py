@@ -59,6 +59,9 @@ class AgreementDocumentService(Service):
         user_agreement_doc = self._user_agreement_document_da.get_agreed_document_by_name(user_id, document_name, language)
         return bool(user_agreement_doc and user_agreement_doc.is_agreed)
 
+    def delete_by_user_id(self, user_id: int):
+        return self._user_agreement_document_da.delete_by_user_id(user_id)
+
     def delete_document(self, name: str, language: str):
         time_now = datetime.utcnow()
         int_time_now = int(time_now.timestamp())
